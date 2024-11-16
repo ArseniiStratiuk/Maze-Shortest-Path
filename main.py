@@ -24,11 +24,24 @@ def is_valid() -> bool:
     ...
 
 
-def find_start(matrix: list[tuple[int, int]]) -> tuple[int, int]:
+def find_start(filename: str) -> tuple[int, int]:
     """
-    Віктор
+    Finding the start position.
+
+    :param filename: str, The file with the matrix
+    :return tuple[int, int]|None, The coordinates of the start position or 
+                                None if this position doesn't exist   
+
     """
-    ...
+    matrix = read_file(filename)
+    n = len(matrix)
+    for i in range(n):
+        m = len(matrix[i])
+        for j in range(m):
+            if matrix[i][j] == 'S':
+                return (i, j)
+    return None
+
 
 
 def get_shortest_path(matrix: list[tuple[int, int]],
@@ -45,3 +58,8 @@ def visualize_results(shortest_path: list[tuple[int, int]],
     Віктор
     """
     ...
+
+
+if __name__ == '__main__':
+    import doctest
+    print(doctest.testmod())
