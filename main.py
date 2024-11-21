@@ -10,15 +10,17 @@ Shortest maze path.
 #     ...
 
 
-def get_neighbors(matrix: list, row: str or int, column: str or int, start: str or int) \
+def get_neighbors(matrix: list[tuple[int, int]], row: str or int, column: str or int, start: str or int) \
      -> list[tuple[int, int]]:
     """
     Богдан
-    """
-    indices = [(row - 1, column), (row + 1, column), (row, column - 1), (row< column + 1)]
 
-    return [(row, column) for row, column in indices if is_valid(matrix, row, column) and
-    matrix[row][column] == start]
+    >>> get_neighbors([[1, 1, 1, 1, 1], [1, 0, 0, 1, 1], [1, 0, 1, 0, 1], [1, 1, 1, 1, 1], [1, 0, 0, 0, 1]], 1, 1, 0)
+    """
+    indices = [(row - 1, column), (row + 1, column), (row, column - 1), (row, column + 1)]
+
+    return sorted([(row, column) for row, column in indices if is_valid(matrix, row, column) and
+    matrix[row][column] == start])
 
 
 def is_valid(matrix, row, column) -> bool:
@@ -49,3 +51,7 @@ def is_valid(matrix, row, column) -> bool:
 #     Віктор
 #     """
 #     ...
+
+if __name__ == "__main__":
+    import doctest
+    print(doctest.testmod())
