@@ -10,18 +10,26 @@ def read_file(filename: str) -> list[list[int | str]]:
     ...
 
 
-def get_neighbors(matrix: list[tuple[int, int]], row: int, column: int) -> list[tuple[int, int]]:
+def get_neighbors(matrix: list[tuple[int, int]], row: int, column: int) \
+     -> list[tuple[int, int]]:
+    """
+    Богдан
+
+    >>> get_neighbors([[1, 1, 1, 1, 1], [1, 0, 0, 1, 1], [1, 0, 1, 0, 1], \
+[1, 1, 1, 1, 1], [1, 0, 0, 0, 1]], 1, 1)
+    [(2, 1), (1, 2)]
+    """
+    indices = [(row - 1, column), (row + 1, column), (row, column - 1), (row, column + 1)]
+
+    return ([(row, column) for row, column in indices if is_valid(matrix, row, column) and
+    matrix[row][column] in [0, 'F']])
+
+
+def is_valid(matrix, row, column) -> bool:
     """
     Богдан
     """
-    ...
-
-
-def is_valid() -> bool:
-    """
-    Богдан
-    """
-    ...
+    return row  >= 0 and column >= 0 and row < len(matrix) and column < len(matrix[0])
 
 
 def find_start(filename: str) -> tuple[int, int]:
@@ -77,14 +85,14 @@ def get_shortest_path(matrix: list[list[int | str]],
     while queue:
         current = queue.pop(0)
 
-        if matrix[*current] == 'F':
+        if matrix[current[0]][current[1]] == 'F':
             path = []
             while current:
                 path.append(current)
                 current = parents[current]
             return path[::-1]
 
-        for neighbor in get_neighbors(matrix, *current):
+        for neighbor in get_neighbors(matrix, current[0], current[1]):
             if neighbor not in visited:
                 visited.add(neighbor)
                 parents[neighbor] = current
