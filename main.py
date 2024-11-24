@@ -37,7 +37,7 @@ def read_file(filename: str) -> list[list[int | str]]:
                     processed_row.append(part)
                 else:
                     return 'Incorrect matrix'
-            if processed_row[0] == 'S':
+            if 'S' in processed_row:
                 start_found = True
             if 'F' in processed_row:
                 finish_found = True
