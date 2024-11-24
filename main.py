@@ -10,17 +10,17 @@ Shortest maze path.
 #     ...
 
 
-def get_neighbors(matrix: list[tuple[int, int]], row: str or int, column: str or int, start: str or int) \
+def get_neighbors(matrix: list[tuple[int, int]], row: int, column: int) \
      -> list[tuple[int, int]]:
     """
     Богдан
 
-    >>> get_neighbors([[1, 1, 1, 1, 1], [1, 0, 0, 1, 1], [1, 0, 1, 0, 1], [1, 1, 1, 1, 1], [1, 0, 0, 0, 1]], 1, 1, 0)
+    >>> get_neighbors([[1, 1, 1, 1, 1], [1, 0, 0, 1, 1], [1, 0, 1, 0, 1], [1, 1, 1, 1, 1], [1, 0, 0, 0, 1]], 1, 1)
     """
     indices = [(row - 1, column), (row + 1, column), (row, column - 1), (row, column + 1)]
 
-    return sorted([(row, column) for row, column in indices if is_valid(matrix, row, column) and
-    matrix[row][column] == start])
+    return ([(row, column) for row, column in indices if is_valid(matrix, row, column) and
+    matrix[row][column] == 0])
 
 
 def is_valid(matrix, row, column) -> bool:
