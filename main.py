@@ -43,35 +43,43 @@ def find_start(filename: str) -> tuple[int, int]:
     return None
 
 
-def get_shortest_path(matrix: list[tuple[int, int]], finish: tuple[int, int],
+def get_shortest_path(matrix: list[list[int | str]],
                       start: tuple[int, int]) -> list[tuple[int, int]] | int:
     """
     Find the shortest path in the maze, starting from the start position,
     implementing the Breadth-First Search algorithm.
 
-    :param matrix: list[tuple[int, int]], The matrix of the maze, represented
-        as a list of coordinates of the possible paths.
-    :param finish: tuple[int, int], The end position.
+    :param matrix: list[list[int | str]], The maze represented as a matrix.
+        Walls are represented as 1, empty cells as 0, start position as 'S'
+        and finish position as 'F'.
     :param start: tuple[int, int], The start position.
     :return list[tuple[int, int]], The shortest path from the start to the end position,
         represented as a list of coordinates of the path. If there is no path, return -1.
 
-    >>> matrix = read_file('input.csv')
-    >>> start = find_start('input.csv')
-    TODO: Add tests.
+    >>> maze = [
+    ...     [ 0 , 1 , 0 , 0 , 0 ],
+    ...     [ 0 , 1 , 0 , 1 , 0 ],
+    ...     [ 0 , 0 , 0 , 1 ,'F'],
+    ...     ['S', 1 , 1 , 1 , 0 ],
+    ...     [ 0 , 0 , 0 , 0 , 0 ],
+    ... ]
+    >>> start = (3, 0)
+    >>> get_shortest_path(maze, start)
+    [(3, 0), (4, 0), (4, 1), (4, 2), (4, 3), (4, 4), (3, 4), (2, 4)]
+    >>> len(get_shortest_path(maze, start)) == 8
+    True
     """
     queue = [start]
     visited = set()
-    parents = {}
-    parents[start] = None
+    parents = {start: None}
     visited.add(start)
 
     while queue:
         current = queue.pop(0)
 
-        if current == finish:
+        if matrix[*current] == 'F':
             path = []
-            while current is not None:
+            while current:
                 path.append(current)
                 current = parents[current]
             return path[::-1]
