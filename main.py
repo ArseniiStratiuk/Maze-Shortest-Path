@@ -46,43 +46,50 @@ def read_file(filename: str) -> list[list[int | str]]:
         return 'Incorrect matrix'
     return matrix
 
-if __name__ == '__main__':
+
+def get_neighbors(matrix: list[tuple[int, int]], row: int, column: int) \
+     -> list[tuple[int, int]]:
+    """
+    Богдан
+
+    >>> get_neighbors([[1, 1, 1, 1, 1], [1, 0, 0, 1, 1], [1, 0, 1, 0, 1], [1, 1, 1, 1, 1], [1, 0, 0, 0, 1]], 1, 1)
+    """
+    indices = [(row - 1, column), (row + 1, column), (row, column - 1), (row, column + 1)]
+
+    return ([(row, column) for row, column in indices if is_valid(matrix, row, column) and
+    matrix[row][column] == 0])
+
+
+def is_valid(matrix, row, column) -> bool:
+    """
+    Богдан
+    """
+    return row  >= 0 and column >= 0 and row < len(matrix) and column < len(matrix[0])
+
+
+# def find_start(matrix: list[tuple[int, int]]) -> tuple[int, int]:
+#     """
+#     Віктор
+#     """
+#     ...
+
+
+# def get_shortest_path(matrix: list[tuple[int, int]],
+#                       start: tuple[int, int]) -> list[tuple[int, int]]:
+#     """
+#     Марта, Арсеній
+#     """
+#     ...
+
+
+# def visualize_results(shortest_path: list[tuple[int, int]],
+#                       matrix: list[tuple[int, int]]):
+#     """
+#     Віктор
+#     """
+#     ...
+
+
+if __name__ == "__main__":
     import doctest
     print(doctest.testmod())
-
-
-def get_neighbors(row: int, column: int) -> list[tuple[int, int]]:
-    """
-    Богдан
-    """
-    ...
-
-
-def is_valid() -> bool:
-    """
-    Богдан
-    """
-    ...
-
-
-def find_start(matrix: list[tuple[int, int]]) -> tuple[int, int]:
-    """
-    Віктор
-    """
-    ...
-
-
-def get_shortest_path(matrix: list[tuple[int, int]],
-                      start: tuple[int, int]) -> list[tuple[int, int]]:
-    """
-    Марта, Арсеній
-    """
-    ...
-
-
-def visualize_results(shortest_path: list[tuple[int, int]],
-                      matrix: list[tuple[int, int]]):
-    """
-    Віктор
-    """
-    ...
