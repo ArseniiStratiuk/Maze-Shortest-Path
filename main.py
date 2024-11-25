@@ -3,18 +3,16 @@ Shortest maze path.
 """
 
 
-def read_file(filename: str) -> list[list[int | str]]:
-    """
-    Джія
-    """
-    ...
+# def read_file(filename: str) -> list[list[int | str]]:
+#     """
+#     Джія
+#     """
+#     ...
 
 
 def get_neighbors(matrix: list[tuple[int, int]], row: int, column: int) \
      -> list[tuple[int, int]]:
     """
-    Богдан
-
     >>> get_neighbors([[1, 1, 1, 1, 1], [1, 0, 0, 1, 1], [1, 0, 1, 0, 1], \
 [1, 1, 1, 1, 1], [1, 0, 0, 0, 1]], 1, 1)
     [(2, 1), (1, 2)]
@@ -27,7 +25,6 @@ def get_neighbors(matrix: list[tuple[int, int]], row: int, column: int) \
 
 def is_valid(matrix, row, column) -> bool:
     """
-    Богдан
     """
     return row  >= 0 and column >= 0 and row < len(matrix) and column < len(matrix[0])
 
