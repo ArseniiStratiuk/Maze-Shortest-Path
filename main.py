@@ -1,6 +1,7 @@
 """
 Shortest maze path.
 """
+import os
 
 
 def read_file(filename: str) -> list[list[int | str]]:
@@ -47,35 +48,58 @@ def read_file(filename: str) -> list[list[int | str]]:
     return matrix
 
 
-def get_neighbors(matrix: list[tuple[int, int]], row: int, column: int) \
-     -> list[tuple[int, int]]:
+def get_neighbors(matrix: list[list[int | str]],
+                  row: int, column: int) -> list[tuple[int, int]]:
     """
+    Get the neighbors of the given row and column in the matrix.
+
+    Returns:
+        list[tuple[int, int]]: The neighbors of the given row and column.
+
     >>> get_neighbors([[1, 1, 1, 1, 1], [1, 0, 0, 1, 1], [1, 0, 1, 0, 1], \
 [1, 1, 1, 1, 1], [1, 0, 0, 0, 1]], 1, 1)
     [(2, 1), (1, 2)]
     """
     indices = [(row - 1, column), (row + 1, column), (row, column - 1), (row, column + 1)]
 
-    return ([(row, column) for row, column in indices if is_valid(matrix, row, column) and
-    matrix[row][column] in [0, 'F']])
+    return ([(row, column) for row, column in indices
+             if is_valid(matrix, row, column) and matrix[row][column] in [0, 'F']])
 
 
-def is_valid(matrix, row, column) -> bool:
+def is_valid(matrix: list[list[int | str]], row: int, column: int) -> bool:
     """
+    Check if the given row and column are valid in the matrix.
+
+    Returns:
+        bool: True if the row and column are valid, False otherwise.
+
+    >>> is_valid([[1, 1, 1, 1, 1], [1, 0, 0, 1, 1], [1, 0, 1, 0, 1], \
+[1, 1, 1, 1, 1], [1, 0, 0, 0, 1]], 1, 1)
+    True
     """
-    return row  >= 0 and column >= 0 and row < len(matrix) and column < len(matrix[0])
+    return 0 <= row < len(matrix) and 0 <= column < len(matrix[0])
 
 
-def find_start(filename: str) -> tuple[int, int]:
+def find_start(matrix: list[list[int | str]]) -> tuple[int, int]:
     """
-    Finding the start position.
+    Find the start position in the maze.
 
-    :param filename: str, The file with the matrix
-    :return tuple[int, int]|None, The coordinates of the start position or 
-                                None if this position doesn't exist   
+    Args:
+        matrix (list[list[int | str]]): The maze represented as a matrix.
 
+    Returns:
+        tuple[int, int]: The start position.
+
+    >>> maze = [
+    ...     [ 0 , 1 , 0 , 0 , 0 ],
+    ...     [ 0 , 1 , 0 , 1 , 0 ],
+    ...     [ 0 , 0 , 0 , 1 ,'F'],
+    ...     ['S', 1 , 1 , 1 , 0 ],
+    ...     [ 0 , 0 , 0 , 0 , 0 ],
+    ... ]
+    >>> find_start(maze)
+    (3, 0)
     """
-    matrix = read_file(filename)
     n = len(matrix)
     for i in range(n):
         m = len(matrix[i])
@@ -91,12 +115,13 @@ def get_shortest_path(matrix: list[list[int | str]],
     Find the shortest path in the maze, starting from the start position,
     implementing the Breadth-First Search algorithm.
 
-    :param matrix: list[list[int | str]], The maze represented as a matrix.
-        Walls are represented as 1, empty cells as 0, start position as 'S'
-        and finish position as 'F'.
-    :param start: tuple[int, int], The start position.
-    :return list[tuple[int, int]], The shortest path from the start to the end position,
-        represented as a list of coordinates of the path. If there is no path, return -1.
+    Args:
+        matrix (list[list[int | str]]): The maze represented as a matrix.
+        start (tuple[int, int]): The start position.
+
+    Returns:
+        list[tuple[int, int]]|int: The shortest path in the maze or -1 if
+        there is no path.
 
     >>> maze = [
     ...     [ 0 , 1 , 0 , 0 , 0 ],
@@ -136,11 +161,74 @@ def get_shortest_path(matrix: list[list[int | str]],
 
 
 def visualize_results(shortest_path: list[tuple[int, int]],
-                      matrix: list[tuple[int, int]]):
+                      matrix: list[list[int | str]]) -> str | None:
     """
-    Віктор
+    Visualize the results of the shortest path in the maze. Using ascii art
+    for the matrices no bigger than 20x20. For the bigger one, just write the
+    visualization to a file located in "Visualization" folder within the
+    working directory.
+
+    Different colors are used for the path, start, finish, and obstacles.
+
+    Args:
+        shortest_path (list[tuple[int, int]]): The shortest path in the maze.
+        matrix (list[list[int | str]]): The maze represented as a matrix.
+
+    Returns:
+        str|None: The visualization in a string format of the maze with the
+        shortest path or None if written to a file.
+
+    >>> maze = [
+    ...     [ 0 , 1 , 0 , 0 , 0 ],
+    ...     [ 0 , 1 , 0 , 1 , 0 ],
+    ...     [ 0 , 0 , 0 , 1 ,'F'],
+    ...     ['S', 1 , 1 , 1 , 0 ],
+    ...     [ 0 , 0 , 0 , 0 , 0 ],
+    ... ]
+    >>> start = find_start(maze)
+    >>> shortest_path = get_shortest_path(maze, start)
+    >>> visualize_results(shortest_path, maze)
+    '+---+---+---+---+---+\\n|   | \\x1b[91m#\\x1b[0m |   |   |   |\\n+---+---+---+---+---+\\n\
+|   | \\x1b[91m#\\x1b[0m |   | \\x1b[91m#\\x1b[0m |   |\\n+---+---+---+---+---+\\n|   |   |   | \
+\\x1b[91m#\\x1b[0m | \\x1b[94mF\\x1b[0m |\\n+---+---+---+---+---+\\n| \\x1b[94mS\\x1b[0m | \
+\\x1b[91m#\\x1b[0m | \\x1b[91m#\\x1b[0m | \\x1b[91m#\\x1b[0m | \\x1b[92mX\\x1b[0m |\\n+---+--\
+-+---+---+---+\\n| \\x1b[92mX\\x1b[0m | \\x1b[92mX\\x1b[0m | \\x1b[92mX\\x1b[0m | \\x1b[92mX\\\
+x1b[0m | \\x1b[92mX\\x1b[0m |\\n+---+---+---+---+---+'
     """
-    ...
+    rows = len(matrix)
+    columns = len(matrix[0])
+    visualizing_data = []
+
+    for i in range(rows):
+        visualizing_data.append('+---' * columns + '+')
+        row = []
+        for j in range(columns):
+            if (i, j) in shortest_path:
+                row.append('| X ' if matrix[i][j] == 0 else f'| {matrix[i][j]} ')
+            else:
+                row.append('|   ' if matrix[i][j] != 1 else '| # ')
+        row.append('|')
+        visualizing_data.append(''.join(row))
+    visualizing_data.append('+---' * columns + '+')
+
+    result = '\n'.join(visualizing_data)
+
+    # Color the path in green; start, finish in blue; obstacles in red.
+    result = result.replace('X', '\033[92mX\033[0m')
+    result = result.replace('S', '\033[94mS\033[0m')
+    result = result.replace('F', '\033[94mF\033[0m')
+    result = result.replace('#', '\033[91m#\033[0m')
+
+    if rows <= 20 and columns <= 20:
+        return result
+
+    filename = f'{len(shortest_path)}_steps_{rows}x{columns}_matrix.txt'
+    if not os.path.exists('Visualization'):
+        os.makedirs('Visualization')
+    with open(f'Visualization/{filename}', 'w', encoding='utf-8') as file:
+        file.write(result)
+
+    return None
 
 
 if __name__ == "__main__":
