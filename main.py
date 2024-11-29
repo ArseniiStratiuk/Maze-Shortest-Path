@@ -1,5 +1,11 @@
 """
-Shortest maze path.
+This module contains functions for reading a matrix from a .csv file, finding
+the shortest path in the maze, and visualizing the results.
+
+The matrix is represented as a list of rows, where each row is a list of
+integers and strings. The integers represent the obstacles (1) and the
+free spaces (0), while the strings represent the start ('S') and the
+finish ('F') positions.
 """
 import os
 
@@ -231,6 +237,6 @@ x1b[0m | \\x1b[92mX\\x1b[0m |\\n+---+---+---+---+---+'
     return None
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import doctest
     print(doctest.testmod())
