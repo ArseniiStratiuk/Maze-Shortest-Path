@@ -173,7 +173,7 @@ def visualize_results(shortest_path: list[tuple[int, int]],
                       matrix: list[list[int | str]]) -> str | None:
     """
     Visualize the results of the shortest path in the maze. Using ascii art
-    for the matrices no bigger than 20x20. For the bigger one, just write the
+    for the matrices no bigger than 31x31. For the bigger one, just write the
     visualization to a file located in "Visualization" folder within the
     working directory.
 
@@ -240,7 +240,7 @@ def visualize_results(shortest_path: list[tuple[int, int]],
 
     result = "\n".join(visualizing_data)
 
-    if rows <= 20 and columns <= 20:
+    if rows <= 31 and columns <= 31:
         return result
 
     filename = f"{len(shortest_path)}_steps_{rows}x{columns}_matrix.txt"
@@ -252,25 +252,60 @@ def visualize_results(shortest_path: list[tuple[int, int]],
     return None
 
 
+def main():
+    """
+    Main function to read the maze file, find the shortest path, and visualize.
+    """
+    parser = argparse.ArgumentParser(
+        description=(
+            "🌟 Maze Shortest Path Finder 🌟\nFind the "
+            "shortest path in a maze from a CSV file."
+        )
+    )
+    parser.add_argument(
+        "input_file",
+        help="Path to the .csv file containing the maze.",
+    )
+    args = parser.parse_args()
+
+    input_file = args.input_file
+
+    if not os.path.isfile(input_file):
+        print("❌ Error: The specified file does not exist. Please provide a valid path.")
+        return
+
+    try:
+        matrix_maze = read_file(input_file)
+    except Exception as e:
+        print(f"❌ Error: Unable to read the maze file. Details: {e}")
+        return
+
+    if matrix_maze == "Incorrect maze":
+        print("❌ Error: The maze format is invalid. Please check the file content.")
+        return
+
+    start_maze = find_start(matrix_maze)
+    if start_maze is None:
+        print("❌ Error: Start point not found in the maze.")
+        return
+
+    shortest_path_maze = get_shortest_path(matrix_maze, start_maze)
+    if shortest_path_maze == -1:
+        print("😞 There is no path to the destination in the maze.")
+        return
+
+    print(f"✅ Shortest path found with {len(shortest_path_maze)} steps.")
+    visualization = visualize_results(shortest_path_maze, matrix_maze)
+
+    if visualization:
+        print("\n🌟 Maze Visualization 🌟")
+        print(visualization)
+    else:
+        print("📝 Maze is too large to visualize on the console.")
+        print("📂 The visualization has been saved to the 'Visualization' folder.")
+
+
 if __name__ == '__main__':
     # import doctest
     # print(doctest.testmod())
-
-    parser = argparse.ArgumentParser(description="Maze shortest path finder.")
-    parser.add_argument("input_file", help="Path to the .csv file containing the maze.")
-    args = parser.parse_args()
-    matrix_maze = read_file(args.input_file)
-    if matrix_maze == 'Incorrect maze':
-        print("Error: Incorrect maze format.")
-    else:
-        start_maze = find_start(matrix_maze)
-        shortest_path_maze = get_shortest_path(matrix_maze, start_maze)
-        if shortest_path_maze == -1:
-            print("There is no path :(")
-        else:
-            print(f"Shortest path in the maze: {shortest_path_maze}")
-            visualization = visualize_results(shortest_path_maze, matrix_maze)
-            if visualization:
-                print(visualization)
-            else:
-                print("Maze is to large to visualize. It is saved to 'Visualization' folder.")
+    main()
