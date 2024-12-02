@@ -81,7 +81,7 @@ def save_maze_to_csv(maze: list[list[int]], filename: str):
 
 
 if __name__ == "__main__":
-    rows, cols = 21, 21  # Maze dimensions (must be odd)
+    rows, cols = 17, 17  # Maze dimensions (should be odd)
     maze = generate_maze(rows, cols)
     save_maze_to_csv(maze, "maze.csv")
-    print("Maze saved to 'maze.csv'")
+    print("Maze is saved to 'maze.csv'")

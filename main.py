@@ -10,15 +10,19 @@ finish ('F') positions.
 import os
 import argparse
 
+
 def read_file(filename: str) -> list[list[int | str]]:
     """
     Reads the matrix from a .csv file and returns a list of rows.
     Converts '1' and '0' to integers, keeps 'S' and 'F' as strings, 
     and returns 'incorrect matrix' for invalid inputs.
+
     Args:
         file_name (str): .csv file with the matrix.
+
     Returns:
         list[list[int | str]]: list of rows or 'Incorrect matrix' if invalid inputs are found.
+
     >>> with open("matrix1.csv", "w", encoding="utf-8") as f:
     ...    _ = f.write("0,1,0,0,0\\n0,1,0,1,0\\n0,0,0,1,F\\nS,1,1,1,0\\n0,0,0,0,0\\n")
     >>> read_file('matrix1.csv')
@@ -183,78 +187,90 @@ def visualize_results(shortest_path: list[tuple[int, int]],
         str|None: The visualization in a string format of the maze with the
         shortest path or None if written to a file.
 
-    >>> maze = [
-    ...     [ 0 , 1 , 0 , 0 , 0 ],
-    ...     [ 0 , 1 , 0 , 1 , 0 ],
-    ...     [ 0 , 0 , 0 , 1 ,'F'],
-    ...     ['S', 1 , 1 , 1 , 0 ],
-    ...     [ 0 , 0 , 0 , 0 , 0 ],
-    ... ]
+    >>> maze = read_file('maze_test.csv')
     >>> start = find_start(maze)
     >>> shortest_path = get_shortest_path(maze, start)
-    >>> visualize_results(shortest_path, maze)
-    '+---+---+---+---+---+\\n|   | \\x1b[91m#\\x1b[0m |   |   |   |\\n+---+---+---+---+---+\\n\
-|   | \\x1b[91m#\\x1b[0m |   | \\x1b[91m#\\x1b[0m |   |\\n+---+---+---+---+---+\\n|   |   |   | \
-\\x1b[91m#\\x1b[0m | \\x1b[94mF\\x1b[0m |\\n+---+---+---+---+---+\\n| \\x1b[94mS\\x1b[0m | \
-\\x1b[91m#\\x1b[0m | \\x1b[91m#\\x1b[0m | \\x1b[91m#\\x1b[0m | \\x1b[92mX\\x1b[0m |\\n+---+--\
--+---+---+---+\\n| \\x1b[92mX\\x1b[0m | \\x1b[92mX\\x1b[0m | \\x1b[92mX\\x1b[0m | \\x1b[92mX\\\
-x1b[0m | \\x1b[92mX\\x1b[0m |\\n+---+---+---+---+---+'
+    >>> print(visualize_results(shortest_path, maze))
+    ⬜⬜⬜🧱🚩🟩🟩🟩🟩🧱⬜⬜⬜⬜⬜⬜⬜
+    ⬜🧱⬜🧱🧱🧱🧱🧱🟩🧱🧱🧱⬜🧱🧱🧱⬜
+    ⬜🧱⬜⬜⬜🧱⬜🧱🟩🟩🟩🧱⬜🧱⬜⬜⬜
+    🧱🧱⬜🧱⬜🧱⬜🧱🧱🧱🟩🧱⬜🧱⬜🧱🧱
+    ⬜⬜⬜🧱⬜⬜⬜⬜⬜🧱🟩🧱⬜🧱⬜⬜⬜
+    ⬜🧱🧱🧱🧱🧱🧱🧱🧱🧱🟩🧱⬜🧱🧱🧱⬜
+    ⬜🧱⬜⬜⬜⬜🏁🟩🟩🧱🟩🧱⬜🧱⬜⬜⬜
+    ⬜🧱⬜🧱🧱🧱🧱🧱🟩🧱🟩🧱⬜🧱⬜🧱🧱
+    ⬜🧱⬜🧱⬜⬜⬜🧱🟩🟩🟩🧱⬜🧱⬜⬜⬜
+    ⬜🧱⬜🧱⬜🧱⬜🧱🧱🧱🧱🧱⬜🧱🧱🧱⬜
+    ⬜🧱⬜⬜⬜🧱⬜⬜⬜⬜⬜🧱⬜⬜⬜🧱⬜
+    ⬜🧱🧱🧱🧱🧱🧱🧱🧱🧱⬜🧱🧱🧱🧱🧱⬜
+    ⬜⬜⬜⬜⬜🧱⬜⬜⬜🧱⬜⬜⬜⬜⬜⬜⬜
+    ⬜🧱🧱🧱⬜🧱🧱🧱⬜🧱🧱🧱🧱🧱🧱🧱⬜
+    ⬜⬜⬜🧱⬜⬜⬜⬜⬜⬜⬜🧱⬜⬜⬜⬜⬜
+    ⬜🧱⬜🧱🧱🧱🧱🧱🧱🧱🧱🧱⬜🧱🧱🧱🧱
+    ⬜🧱⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
     """
     rows = len(matrix)
     columns = len(matrix[0])
     visualizing_data = []
 
+    cell_map = {
+        "X": "🟩",
+        "S": "🚩",
+        "F": "🏁",
+        "#": "🧱",
+        " ": "⬜"
+    }
+
     for i in range(rows):
-        visualizing_data.append('+---' * columns + '+')
         row = []
         for j in range(columns):
-            if (i, j) in shortest_path:
-                row.append('| X ' if matrix[i][j] == 0 else f'| {matrix[i][j]} ')
+            if matrix[i][j] == "S":
+                cell = "S"
+            elif matrix[i][j] == "F":
+                cell = "F"
+            elif (i, j) in shortest_path:
+                cell = "X"
+            elif matrix[i][j] == 1:
+                cell = "#"
             else:
-                row.append('|   ' if matrix[i][j] != 1 else '| # ')
-        row.append('|')
-        visualizing_data.append(''.join(row))
-    visualizing_data.append('+---' * columns + '+')
+                cell = " "
 
-    result = '\n'.join(visualizing_data)
+            row.append(cell_map[cell])
+        visualizing_data.append("".join(row))
 
-    # Color the path in green; start, finish in blue; obstacles in red.
-    result = result.replace('X', '\033[92mX\033[0m')
-    result = result.replace('S', '\033[94mS\033[0m')
-    result = result.replace('F', '\033[94mF\033[0m')
-    result = result.replace('#', '\033[91m#\033[0m')
+    result = "\n".join(visualizing_data)
 
     if rows <= 20 and columns <= 20:
         return result
 
-    filename = f'{len(shortest_path)}_steps_{rows}x{columns}_matrix.txt'
-    if not os.path.exists('Visualization'):
-        os.makedirs('Visualization')
-    with open(f'Visualization/{filename}', 'w', encoding='utf-8') as file:
+    filename = f"{len(shortest_path)}_steps_{rows}x{columns}_matrix.txt"
+    if not os.path.exists("Visualization"):
+        os.makedirs("Visualization")
+    with open(os.path.join("Visualization", filename), "w", encoding="utf-8") as file:
         file.write(result)
 
     return None
 
 
 if __name__ == '__main__':
-    import doctest
-    print(doctest.testmod())
+    # import doctest
+    # print(doctest.testmod())
 
-parser = argparse.ArgumentParser(description="Maze shortest path finder.")
-parser.add_argument("input_file", help="Path to the .csv file containing the maze.")
-args = parser.parse_args()
-matrix_maze = read_file(args.input_file)
-if matrix_maze == 'Incorrect maze':
-    print("Error: Incorrect maze format.")
-else:
-    start_maze = find_start(matrix_maze)
-    shortest_path_maze = get_shortest_path(matrix_maze, start_maze)
-    if shortest_path_maze == -1:
-        print("There is no path :(")
+    parser = argparse.ArgumentParser(description="Maze shortest path finder.")
+    parser.add_argument("input_file", help="Path to the .csv file containing the maze.")
+    args = parser.parse_args()
+    matrix_maze = read_file(args.input_file)
+    if matrix_maze == 'Incorrect maze':
+        print("Error: Incorrect maze format.")
     else:
-        print(f"Shortest path in the maze: {shortest_path_maze}")
-        visualization = visualize_results(shortest_path_maze, matrix_maze)
-        if visualization:
-            print(visualization)
+        start_maze = find_start(matrix_maze)
+        shortest_path_maze = get_shortest_path(matrix_maze, start_maze)
+        if shortest_path_maze == -1:
+            print("There is no path :(")
         else:
-            print("Maze is to large to visualize. It is saved to 'Visualization' folder.")
+            print(f"Shortest path in the maze: {shortest_path_maze}")
+            visualization = visualize_results(shortest_path_maze, matrix_maze)
+            if visualization:
+                print(visualization)
+            else:
+                print("Maze is to large to visualize. It is saved to 'Visualization' folder.")
