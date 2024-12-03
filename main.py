@@ -236,7 +236,13 @@ def visualize_results(shortest_path: list[tuple[int, int]],
                 cell = " "
 
             row.append(cell_map[cell])
+
+        if i % 100 == 0:
+            print(f"🌟 {i}/{rows} rows visualized...", flush=True)
+
         visualizing_data.append("".join(row))
+
+    print(f"🌟 {rows}/{rows} rows visualized.", flush=True)
 
     result = "\n".join(visualizing_data)
 
@@ -266,9 +272,15 @@ def main():
         "input_file",
         help="Path to the .csv file containing the maze.",
     )
+    parser.add_argument(
+        "--no-visualization",
+        action="store_true",
+        help="Disable visualization of the maze and path.",
+    )
     args = parser.parse_args()
 
     input_file = args.input_file
+    disable_visualization = args.no_visualization
 
     if not os.path.isfile(input_file):
         print("❌ Error: The specified file does not exist. Please provide a valid path.")
@@ -295,14 +307,22 @@ def main():
         return
 
     print(f"✅ Shortest path found with {len(shortest_path_maze)} steps.")
-    visualization = visualize_results(shortest_path_maze, matrix_maze)
 
-    if visualization:
-        print("\n🌟 Maze Visualization 🌟")
-        print(visualization)
+    if not disable_visualization:
+        visualization = visualize_results(shortest_path_maze, matrix_maze)
+        if visualization:
+            print("\n🌟 Maze Visualization 🌟")
+            print(visualization)
+        else:
+            print("📝 Maze is too large to visualize on the console.")
+            print("📂 The visualization has been saved to the 'Visualization' folder.")
     else:
-        print("📝 Maze is too large to visualize on the console.")
-        print("📂 The visualization has been saved to the 'Visualization' folder.")
+        print("🔕 Visualization disabled by user.")
+        print("📝 Here are the steps coordinates:")
+        for i, step in enumerate(shortest_path_maze):
+            print(step, end=' ')
+            if i % 10 == 0:
+                print('\n')
 
 
 if __name__ == '__main__':
