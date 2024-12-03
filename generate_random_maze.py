@@ -26,7 +26,7 @@ def generate_maze(rows: int, cols: int) -> list[list[int]]:
         ValueError: If rows or columns are less than 3.
     """
     if rows < 3 or cols < 3:
-        raise ValueError("Розмір лабіринту має бути не менше 3x3")
+        raise ValueError('Розмір лабіринту має бути не менше 3x3')
 
     maze = [[1 for _ in range(cols)] for _ in range(rows)]
     start_row = random.randint(0, (rows - 1) // 2) * 2
@@ -71,9 +71,9 @@ def save_maze_to_csv(maze: list[list[int]], filename: str):
             file.write(','.join(map(str, row)) + '\n')
 
 
-if __name__ == "__main__":
-    rows, cols = 10001, 10001  # Maze dimensions (should be odd).
+if __name__ == '__main__':
+    maze_rows, maze_cols = 41, 41  # Maze dimensions (should be odd).
 
-    maze = generate_maze(rows, cols)
-    save_maze_to_csv(maze, "maze.csv")
+    maze_matrix = generate_maze(maze_rows, maze_cols)
+    save_maze_to_csv(maze_matrix, 'maze.csv')
     print("Maze is saved to 'maze.csv'")
