@@ -318,11 +318,12 @@ def main():
             print("📂 The visualization has been saved to the 'Visualization' folder.")
     else:
         print("🔕 Visualization disabled by user.")
-        print("📝 Here are the steps coordinates:")
-        for i, step in enumerate(shortest_path_maze):
-            print(step, end=' ')
-            if i % 10 == 0:
-                print('\n')
+
+    filename = f"{len(shortest_path_maze)}_steps_{len(matrix_maze)}_matrix.txt"
+    with open(filename, "w", encoding="utf-8") as file:
+        for step in shortest_path_maze:
+            file.write(f"{step}\n")
+    print(f"📝 The steps coordinates have been saved to the {filename}")
 
 
 if __name__ == '__main__':
